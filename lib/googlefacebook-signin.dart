@@ -31,12 +31,16 @@ class WebViewGoogleFacebookState extends State<WebViewGoogleFacebook> {
   }
 
 
+  // Pool Id :- ap-south-1_sddL037Ac
+  // Pool ARN :- arn:aws:cognito-idp:ap-south-1:290164090377:userpool/ap-south-1_sddL037Ac
+  // App Client Name :- cub-stage
+  // App Client ID :- 2dljji9irahl0fhd1o7u0j52d5
+  // Domain Name :- https://cmpstg-new.auth.ap-south-1.amazoncognito.com
 
 
-
-  final COGNITO_CLIENT_ID = '21sddcivk9gvg04osdkt9io2eu';
-  final COGNITO_Pool_ID = 'ap-south-1:41aa7654-2e92-4c08-92fa-dd581496f935';
-  final COGNITO_POOL_URL = 'cmpstg.auth.ap-south-1.amazoncognito.com/';  // CHANGE YOUR DOMAIN NAME
+  final COGNITO_CLIENT_ID = '2dljji9irahl0fhd1o7u0j52d5';
+  final COGNITO_Pool_ID = 'ap-south-1_sddL037Ac';
+  final COGNITO_POOL_URL = 'https://cmpstg-new.auth.ap-south-1.amazoncognito.com/';  // CHANGE YOUR DOMAIN NAME
   final CLIENT_SECRET = '21sddcivk9gvg04osdkt9io2eu';
   var web_view_enable=0;
 
@@ -53,8 +57,12 @@ class WebViewGoogleFacebookState extends State<WebViewGoogleFacebook> {
       widget.idendity_provider = "Facebook";
     }
     var signin=0;
-    var url = "https://cmpstg.auth.ap-south-1.amazoncognito.com/login?"
-        "response_type=code&client_id=21sddcivk9gvg04osdkt9io2eu&redirect_uri=cubmcpaws://";
+    var url = "https://cmpstg-new.auth.ap-south-1.amazoncognito."
+        "com/login?client_id=2dljji9irahl0fhd1o7u0j52d5&response_type="
+        "code&scope=aws.cognito.signin.user."
+        "admin+email+openid&redirect_uri=http://localhost/";
+    // var url = "https://cmpstg.auth.ap-south-1.amazoncognito.com/login?"
+    //     "response_type=code&client_id=21sddcivk9gvg04osdkt9io2eu&redirect_uri=cubmcpaws://";
     return WebView(
       initialUrl: url,
       userAgent: 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) ' +
@@ -65,8 +73,8 @@ class WebViewGoogleFacebookState extends State<WebViewGoogleFacebook> {
       },
 
       navigationDelegate: (NavigationRequest request) {
-        if (request.url.startsWith("myapp://?code=") && signin==0) {
-          String code = request.url.substring("myapp://?code=".length);
+        if (request.url.startsWith("http://localhost/?code=") && signin==0) {
+          String code = request.url.substring("http://localhost/?code=".length);
           signUserInWithAuthCode(code);
           signin=1;
           return NavigationDecision.prevent;
@@ -81,11 +89,9 @@ class WebViewGoogleFacebookState extends State<WebViewGoogleFacebook> {
 
 
   Future signUserInWithAuthCode(String authCode) async {
-    String url = "https://${COGNITO_POOL_URL}" +
-        ".amazoncognito.com/oauth2/token?grant_type=authorization_code&client_id=" +
-        "${COGNITO_CLIENT_ID}&client_secret=${CLIENT_SECRET}&code=" +
-        authCode +
-        "&redirect_uri=myapp://";
+    String url = "https://cmpstg.auth.ap-south-1.amazoncognito.com/login?"
+        "response_type=code&client_id=21sddcivk9gvg04osdkt9io2eu&&code=" +
+        authCode +"&redirect_uri=cubmcpaws://";
     final response = await http.post(url,
         body: {},
         headers: {'Content-Type': 'application/x-www-form-urlencoded'});

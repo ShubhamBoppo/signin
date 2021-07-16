@@ -69,7 +69,10 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!-- <data android:scheme="http" android:host="flutterbooksample.com" /> -->
+
+                <data
+                    android:host="flutterbooksample.com"
+                    android:scheme="http" />
                 <data android:scheme="cubmcpaws://" />
             </intent-filter>
         </activity>
