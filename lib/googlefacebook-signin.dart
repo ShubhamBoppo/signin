@@ -56,13 +56,19 @@ class WebViewGoogleFacebookState extends State<WebViewGoogleFacebook> {
     {
       widget.idendity_provider = "Facebook";
     }
+
+    https://cmpstg-new.auth.ap-south-1.amazoncognito.com/oauth2/token
     var signin=0;
+    // var url = "https://${COGNITO_POOL_URL}" +
+    //     ".amazoncognito.com/oauth2/authorize?identity_provider="+widget.idendity_provider+"&redirect_uri=" +
+    //     "myapp://&response_type=CODE&client_id=${COGNITO_CLIENT_ID}" +
+    //     "&scope=email%20openid%20profile%20aws.cognito.signin.user.admin";
     var url = "https://cmpstg-new.auth.ap-south-1.amazoncognito."
         "com/login?client_id=2dljji9irahl0fhd1o7u0j52d5&response_type="
         "code&scope=aws.cognito.signin.user."
-        "admin+email+openid&redirect_uri=http://localhost/";
+        "admin+email+openid&redirect_uri=myapp://";
     // var url = "https://cmpstg.auth.ap-south-1.amazoncognito.com/login?"
-    //     "response_type=code&client_id=21sddcivk9gvg04osdkt9io2eu&redirect_uri=cubmcpaws://";
+    //     "response_type=code&client_id=21sddcivk9gvg04osdkt9io2eu&redirect_uri=myapp://";
     return WebView(
       initialUrl: url,
       userAgent: 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) ' +
@@ -73,8 +79,8 @@ class WebViewGoogleFacebookState extends State<WebViewGoogleFacebook> {
       },
 
       navigationDelegate: (NavigationRequest request) {
-        if (request.url.startsWith("http://localhost/?code=") && signin==0) {
-          String code = request.url.substring("http://localhost/?code=".length);
+        if (request.url.startsWith("myapp://?code=") && signin==0) {
+          String code = request.url.substring("myapp://?code=".length);
           signUserInWithAuthCode(code);
           signin=1;
           return NavigationDecision.prevent;
@@ -89,9 +95,23 @@ class WebViewGoogleFacebookState extends State<WebViewGoogleFacebook> {
 
 
   Future signUserInWithAuthCode(String authCode) async {
-    String url = "https://cmpstg.auth.ap-south-1.amazoncognito.com/login?"
-        "response_type=code&client_id=21sddcivk9gvg04osdkt9io2eu&&code=" +
-        authCode +"&redirect_uri=cubmcpaws://";
+
+    // {YOUR_APP_URL}.auth.us-east-1.amazoncognito.com/oauth2/token
+    // grant_type=authorization_code&amp
+    // client_id={YOUR_CLIENT_ID}
+    // code={Code obtained in previous step}
+    // redirect_uri=http://localhost:3000
+    // String url = "https://${COGNITO_POOL_URL}" +
+    //     ".amazoncognito.com/oauth2/token?grant_type=authorization_code&client_id=" +
+    //     "${COGNITO_CLIENT_ID}&client_secret=${CLIENT_SECRET}&code=" +
+    //     authCode +
+    //     "&redirect_uri=myapp://";
+    String url =
+        "https://cmpstg-new.auth.ap-south-1.amazoncognito.com/oauth2/token?"
+            "grant_type=authorization_code&client_id=" +
+            "${COGNITO_CLIENT_ID}&code=" +
+            authCode +
+            "&redirect_uri=myapp://";
     final response = await http.post(url,
         body: {},
         headers: {'Content-Type': 'application/x-www-form-urlencoded'});
